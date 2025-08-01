@@ -1,0 +1,160 @@
+/* YouTube Clean Player - CSS Styles */
+
+/* Hide YouTube navigation and distractions */
+#masthead,
+#secondary,
+#comments,
+#primary #secondary,
+.ytd-watch-flexy[slot="secondary"],
+#related,
+#chat,
+.ytp-endscreen-content,
+.ytp-ce-element,
+ytd-compact-video-renderer,
+ytd-video-secondary-info-renderer #description,
+ytd-comments,
+#footer,
+.ytd-page-manager #secondary,
+ytd-two-column-browse-results-renderer,
+.ytp-pause-overlay,
+.ytp-scroll-min,
+.ytp-related-on-error-overlay,
+.ytp-upnext,
+.ytp-cards-button,
+.ytp-info-panel,
+ytd-engagement-panel-section-list-renderer,
+#secondary-inner,
+.ytd-watch-next-secondary-results-renderer {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Ensure video player is visible and centered */
+#movie_player,
+.html5-video-player,
+video,
+.video-stream,
+#player,
+#player-container,
+ytd-player {
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Center the video player */
+#player-container,
+ytd-player {
+  margin: 0 auto !important;
+  max-width: 100vw !important;
+  width: 100% !important;
+}
+
+/* Make primary content full width */
+#primary {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+
+/* Hide the page layout secondary column */
+ytd-watch-flexy #secondary {
+  display: none !important;
+}
+
+/* Make the primary column full width */
+ytd-watch-flexy #primary {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Center video in the viewport */
+body {
+  background: #000 !important;
+}
+
+#page-manager {
+  background: #000 !important;
+}
+
+/* Hide any remaining suggestions or cards */
+.ytp-ce-covering-overlay,
+.ytp-ce-element-shadow,
+.ytp-ce-video,
+.ytp-ce-playlist,
+.ytp-ce-channel,
+.ytp-cards-teaser,
+.ytp-endscreen-element {
+  display: none !important;
+}
+
+/* Hide info panels and overlays */
+.ytp-info-panel-preview,
+.ytp-popup,
+.ytp-tooltip {
+  display: none !important;
+}
+
+/* Clean up the page layout */
+#page {
+  background: #000 !important;
+}
+
+/* Ensure theater mode works properly */
+.ytp-size-button {
+  display: block !important;
+}
+
+/* Hide autoplay next video */
+.ytp-upnext,
+.ytp-upnext-autoplay-icon,
+.ytp-upnext-cancel-button,
+.ytp-upnext-text {
+  display: none !important;
+}
+
+/* Remove margins and padding from main container */
+#container {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Style for full-screen video experience */
+#primary-inner {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Hide video title and metadata to focus only on video */
+#primary-inner > #primary-inner {
+  margin-top: 0 !important;
+}
+
+/* Ensure controls are still accessible */
+.ytp-chrome-bottom,
+.ytp-chrome-top,
+.ytp-progress-bar-container,
+.ytp-left-controls,
+.ytp-right-controls {
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Hide watch page info but keep player */
+ytd-watch-metadata,
+ytd-video-primary-info-renderer,
+ytd-video-secondary-info-renderer {
+  display: none !important;
+}
+
+/* Keep only essential player controls */
+.ytp-play-button,
+.ytp-pause-overlay,
+.ytp-time-display,
+.ytp-volume-area,
+.ytp-progress-bar,
+.ytp-fullscreen-button,
+.ytp-settings-button,
+.ytp-size-button {
+  display: block !important;
+  visibility: visible !important;
+}
