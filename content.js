@@ -41,6 +41,9 @@ class YouTubeCleanPlayer {
     
     // Center the video player
     this.centerVideoPlayer();
+    
+    // Ensure timeline and controls are visible after cleaning
+    setTimeout(() => this.ensureControlsVisible(), 1500);
   }
 
   isWatchPage() {
@@ -123,6 +126,88 @@ class YouTubeCleanPlayer {
         });
       });
     }, 1000);
+    
+    // Ensure timeline and quality controls remain visible
+    this.ensureControlsVisible();
+  }
+
+  ensureControlsVisible() {
+    // Force show timeline/progress bar and related controls
+    const essentialControls = [
+      '.ytp-progress-bar-container',
+      '.ytp-progress-bar',
+      '.ytp-progress-list',
+      '.ytp-scrubber-container',
+      '.ytp-scrubber-button',
+      '.ytp-time-display',
+      '.ytp-time-current',
+      '.ytp-time-separator',
+      '.ytp-time-duration',
+      '.ytp-chrome-bottom',
+      '.ytp-chrome-controls',
+      '.ytp-left-controls',
+      '.ytp-right-controls',
+      '.ytp-play-button',
+      '.ytp-pause-button',
+      '.ytp-next-button',
+      '.ytp-prev-button',
+      '.ytp-volume-area',
+      '.ytp-volume-control',
+      '.ytp-mute-button',
+      '.ytp-volume-slider',
+      '.ytp-settings-button',
+      '.ytp-settings-menu',
+      '.ytp-panel',
+      '.ytp-panel-menu',
+      '.ytp-menuitem',
+      '.ytp-size-button',
+      '.ytp-fullscreen-button',
+      '.ytp-subtitles-button',
+      '.ytp-caption-window-container'
+    ];
+
+    essentialControls.forEach(selector => {
+      const elements = document.querySelectorAll(selector);
+      elements.forEach(el => {
+        if (el) {
+          el.style.display = '';
+          el.style.visibility = 'visible';
+          el.style.opacity = '1';
+          // Remove any potential hiding classes
+          el.classList.remove('hidden');
+        }
+      });
+    });
+
+    // Specifically ensure the settings menu works for quality changes
+    this.ensureQualityControls();
+  }
+
+  ensureQualityControls() {
+    // Make sure quality/resolution controls are accessible
+    setTimeout(() => {
+      const qualitySelectors = [
+        '.ytp-settings-button',
+        '.ytp-settings-menu',
+        '.ytp-panel',
+        '.ytp-panel-menu',
+        '.ytp-menuitem[role="menuitemradio"]', // Quality options
+        '.ytp-menuitem-label',
+        '.ytp-menuitem-content'
+      ];
+
+      qualitySelectors.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(el => {
+          if (el) {
+            el.style.display = '';
+            el.style.visibility = 'visible';
+            el.style.pointerEvents = 'auto';
+            el.style.zIndex = '9999';
+          }
+        });
+      });
+    }, 500);
   }
 
   centerVideoPlayer() {
@@ -153,6 +238,8 @@ class YouTubeCleanPlayer {
           if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
             // Check if new elements were added that we need to hide
             setTimeout(() => this.hideYouTubeElements(), 100);
+            // Re-ensure controls are visible after new content loads
+            setTimeout(() => this.ensureControlsVisible(), 200);
           }
         });
       }

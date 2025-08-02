@@ -148,13 +148,96 @@ ytd-video-secondary-info-renderer {
 
 /* Keep only essential player controls */
 .ytp-play-button,
-.ytp-pause-overlay,
+.ytp-pause-button,
 .ytp-time-display,
+.ytp-time-current,
+.ytp-time-separator,
+.ytp-time-duration,
 .ytp-volume-area,
+.ytp-volume-control,
+.ytp-mute-button,
+.ytp-volume-slider,
 .ytp-progress-bar,
+.ytp-progress-bar-container,
+.ytp-progress-list,
+.ytp-scrubber-container,
+.ytp-scrubber-button,
+.ytp-chrome-bottom,
+.ytp-chrome-controls,
+.ytp-left-controls,
+.ytp-right-controls,
 .ytp-fullscreen-button,
 .ytp-settings-button,
-.ytp-size-button {
+.ytp-settings-menu,
+.ytp-panel,
+.ytp-panel-menu,
+.ytp-menuitem,
+.ytp-menuitem-label,
+.ytp-menuitem-content,
+.ytp-size-button,
+.ytp-subtitles-button,
+.ytp-caption-window-container {
   display: block !important;
   visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Ensure timeline/progress bar is always visible and functional */
+.ytp-progress-bar-container {
+  height: 100% !important;
+  bottom: 0 !important;
+  position: relative !important;
+}
+
+.ytp-progress-bar {
+  height: 100% !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.ytp-scrubber-button {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Ensure settings menu (for quality) is properly positioned and visible */
+.ytp-settings-menu,
+.ytp-panel,
+.ytp-panel-menu {
+  z-index: 9999 !important;
+  position: absolute !important;
+  background: rgba(28, 28, 28, 0.9) !important;
+  border-radius: 2px !important;
+  visibility: visible !important;
+  display: block !important;
+}
+
+.ytp-menuitem {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  padding: 8px 16px !important;
+  color: #fff !important;
+}
+
+.ytp-menuitem:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Make sure controls don't get hidden by our CSS */
+.ytp-chrome-bottom {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent) !important;
+  height: 40px !important;
+}
+
+/* Ensure time display is visible */
+.ytp-time-display {
+  color: #fff !important;
+  font-size: 11px !important;
+  line-height: 40px !important;
 }
