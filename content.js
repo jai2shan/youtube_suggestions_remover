@@ -6,19 +6,28 @@ class YouTubeCleanPlayer {
     this.isEnabled = true;
     this.originalTitle = document.title;
     this.observer = null;
+    this.timeUpdateInterval = null;
     this.init();
   }
 
   init() {
-    // Wait for the page to load
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => this.cleanPage());
-    } else {
-      this.cleanPage();
-    }
+    // Wait for the page to load properly
+    const initializeWhenReady = () => {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          setTimeout(() => this.cleanPage(), 100);
+        });
+      } else {
+        // DOM is already ready
+        setTimeout(() => this.cleanPage(), 100);
+      }
+    };
+
+    initializeWhenReady();
 
     // Set up mutation observer to handle dynamic content
-    this.setupObserver();
+    // Wait a bit to ensure DOM is fully ready
+    setTimeout(() => this.setupObserver(), 500);
     
     // Listen for navigation changes in single-page app
     this.setupNavigationListener();
@@ -181,6 +190,92 @@ class YouTubeCleanPlayer {
 
     // Specifically ensure the settings menu works for quality changes
     this.ensureQualityControls();
+    
+    // Add custom time remaining display
+    this.addTimeRemainingDisplay();
+  }
+
+  addTimeRemainingDisplay() {
+    // Remove existing custom display if any
+    const existingDisplay = document.querySelector('#clean-player-time-remaining');
+    if (existingDisplay) {
+      existingDisplay.remove();
+    }
+
+    // Create time remaining display
+    const timeRemainingDiv = document.createElement('div');
+    timeRemainingDiv.id = 'clean-player-time-remaining';
+    timeRemainingDiv.style.cssText = `
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-family: 'YouTube Sans', 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 9999;
+      pointer-events: none;
+      display: none;
+    `;
+
+    // Find the video player container
+    const playerContainer = document.querySelector('#movie_player') || document.querySelector('.html5-video-player');
+    if (playerContainer) {
+      try {
+        playerContainer.appendChild(timeRemainingDiv);
+        this.updateTimeRemaining();
+      } catch (error) {
+        console.log('YouTube Clean Player: Could not add time remaining display:', error);
+      }
+    }
+  }
+
+  updateTimeRemaining() {
+    const video = document.querySelector('video');
+    const timeRemainingDiv = document.querySelector('#clean-player-time-remaining');
+    
+    if (!video || !timeRemainingDiv) return;
+
+    const updateDisplay = () => {
+      if (video.duration && !isNaN(video.duration)) {
+        const currentTime = video.currentTime;
+        const duration = video.duration;
+        const remaining = duration - currentTime;
+        
+        if (remaining > 0) {
+          const hours = Math.floor(remaining / 3600);
+          const minutes = Math.floor((remaining % 3600) / 60);
+          const seconds = Math.floor(remaining % 60);
+          
+          let timeText = '';
+          if (hours > 0) {
+            timeText = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} left`;
+          } else {
+            timeText = `${minutes}:${seconds.toString().padStart(2, '0')} left`;
+          }
+          
+          timeRemainingDiv.textContent = timeText;
+          timeRemainingDiv.style.display = 'block';
+        } else {
+          timeRemainingDiv.style.display = 'none';
+        }
+      }
+    };
+
+    // Update immediately
+    updateDisplay();
+
+    // Update every second
+    if (!this.timeUpdateInterval) {
+      this.timeUpdateInterval = setInterval(updateDisplay, 1000);
+    }
+
+    // Also update on video events
+    video.addEventListener('timeupdate', updateDisplay);
+    video.addEventListener('loadedmetadata', updateDisplay);
   }
 
   ensureQualityControls() {
@@ -207,7 +302,107 @@ class YouTubeCleanPlayer {
           }
         });
       });
+
+      // Add a custom quality shortcut button
+      this.addQualityShortcut();
     }, 500);
+  }
+
+  addQualityShortcut() {
+    // Remove existing shortcut if any
+    const existingShortcut = document.querySelector('#clean-player-quality-shortcut');
+    if (existingShortcut) {
+      existingShortcut.remove();
+    }
+
+    // Create quality shortcut button
+    const qualityButton = document.createElement('div');
+    qualityButton.id = 'clean-player-quality-shortcut';
+    qualityButton.innerHTML = `
+      <div style="
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-family: 'YouTube Sans', 'Roboto', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 9999;
+        cursor: pointer;
+        user-select: none;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: background 0.2s;
+      " 
+      onmouseover="this.style.background='rgba(255, 255, 255, 0.2)'"
+      onmouseout="this.style.background='rgba(0, 0, 0, 0.8)'"
+      >
+        ⚙️ Quality: <span id="current-quality">Auto</span>
+      </div>
+    `;
+
+    // Find the video player container
+    const playerContainer = document.querySelector('#movie_player') || document.querySelector('.html5-video-player');
+    if (playerContainer) {
+      playerContainer.appendChild(qualityButton);
+      
+      // Add click handler to open settings
+      qualityButton.addEventListener('click', () => {
+        const settingsButton = document.querySelector('.ytp-settings-button');
+        if (settingsButton) {
+          settingsButton.click();
+          // Wait a bit then try to click quality option
+          setTimeout(() => {
+            const qualityMenuItem = Array.from(document.querySelectorAll('.ytp-menuitem')).find(
+              item => item.textContent.toLowerCase().includes('quality') || 
+                      item.textContent.toLowerCase().includes('qualität')
+            );
+            if (qualityMenuItem) {
+              qualityMenuItem.click();
+            }
+          }, 100);
+        }
+      });
+
+      // Update current quality display
+      this.updateQualityDisplay();
+    }
+  }
+
+  updateQualityDisplay() {
+    const updateQuality = () => {
+      const video = document.querySelector('video');
+      const qualitySpan = document.querySelector('#current-quality');
+      
+      if (video && qualitySpan) {
+        // Try to get quality from video element
+        const videoHeight = video.videoHeight;
+        let quality = 'Auto';
+        
+        if (videoHeight) {
+          if (videoHeight >= 2160) quality = '4K';
+          else if (videoHeight >= 1440) quality = '1440p';
+          else if (videoHeight >= 1080) quality = '1080p';
+          else if (videoHeight >= 720) quality = '720p';
+          else if (videoHeight >= 480) quality = '480p';
+          else if (videoHeight >= 360) quality = '360p';
+          else if (videoHeight >= 240) quality = '240p';
+          else quality = '144p';
+        }
+        
+        qualitySpan.textContent = quality;
+      }
+    };
+
+    // Update on video load
+    const video = document.querySelector('video');
+    if (video) {
+      video.addEventListener('loadedmetadata', updateQuality);
+      video.addEventListener('resize', updateQuality);
+      updateQuality(); // Update immediately
+    }
   }
 
   centerVideoPlayer() {
@@ -245,10 +440,20 @@ class YouTubeCleanPlayer {
       }
     });
 
-    this.observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+    // Wait for document.body to be available before observing
+    const startObserving = () => {
+      if (document.body) {
+        this.observer.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+      } else {
+        // If body is not ready, wait a bit and try again
+        setTimeout(startObserving, 100);
+      }
+    };
+
+    startObserving();
   }
 
   setupNavigationListener() {
@@ -283,6 +488,16 @@ class YouTubeCleanPlayer {
     if (this.observer) {
       this.observer.disconnect();
     }
+    if (this.timeUpdateInterval) {
+      clearInterval(this.timeUpdateInterval);
+    }
+    
+    // Remove custom elements
+    const timeRemaining = document.querySelector('#clean-player-time-remaining');
+    if (timeRemaining) timeRemaining.remove();
+    
+    const qualityShortcut = document.querySelector('#clean-player-quality-shortcut');
+    if (qualityShortcut) qualityShortcut.remove();
   }
 }
 

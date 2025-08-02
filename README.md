@@ -14,7 +14,8 @@ A Chrome extension that removes all distractions from YouTube and shows only the
   
 - 🎬 **Video-Only Focus**: Shows only the video player and essential controls
 - ⏱️ **Timeline Preserved**: Keeps the video timeline/progress bar fully functional
-- ⚙️ **Quality Controls**: Maintains access to resolution/quality settings
+- ⏰ **Time Remaining**: Displays remaining video time in top-right corner
+- ⚙️ **Quality Controls**: Easy access to resolution settings with current quality display
 - 🎯 **Toggle Control**: Easy on/off toggle via extension popup
 - 🔄 **Dynamic Updates**: Works with YouTube's single-page navigation
 - 📱 **Responsive**: Works in theater mode and fullscreen
@@ -123,6 +124,8 @@ MIT License - feel free to modify and distribute.
 - Dynamic content handling
 - ✅ Timeline/progress bar preservation
 - ✅ Quality/resolution controls maintained
+- ✅ Time remaining display in top-right corner
+- ✅ Quick quality access button in top-left corner
 
 ## Support
 

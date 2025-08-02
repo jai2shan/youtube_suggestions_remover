@@ -241,3 +241,30 @@ ytd-video-secondary-info-renderer {
   font-size: 11px !important;
   line-height: 40px !important;
 }
+
+/* Custom time remaining and quality display */
+#clean-player-time-remaining,
+#clean-player-quality-shortcut {
+  font-family: 'YouTube Sans', 'Roboto', sans-serif !important;
+  z-index: 10000 !important;
+  pointer-events: auto !important;
+}
+
+#clean-player-quality-shortcut:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: scale(1.05);
+  transition: all 0.2s ease;
+}
+
+/* Ensure our custom elements don't get hidden */
+#clean-player-time-remaining,
+#clean-player-quality-shortcut div {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Make sure video controls overlay properly */
+.html5-video-player {
+  position: relative !important;
+}
