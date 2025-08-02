@@ -346,28 +346,32 @@ class YouTubeCleanPlayer {
     // Find the video player container
     const playerContainer = document.querySelector('#movie_player') || document.querySelector('.html5-video-player');
     if (playerContainer) {
-      playerContainer.appendChild(qualityButton);
-      
-      // Add click handler to open settings
-      qualityButton.addEventListener('click', () => {
-        const settingsButton = document.querySelector('.ytp-settings-button');
-        if (settingsButton) {
-          settingsButton.click();
-          // Wait a bit then try to click quality option
-          setTimeout(() => {
-            const qualityMenuItem = Array.from(document.querySelectorAll('.ytp-menuitem')).find(
-              item => item.textContent.toLowerCase().includes('quality') || 
-                      item.textContent.toLowerCase().includes('qualität')
-            );
-            if (qualityMenuItem) {
-              qualityMenuItem.click();
-            }
-          }, 100);
-        }
-      });
+      try {
+        playerContainer.appendChild(qualityButton);
+        
+        // Add click handler to open settings
+        qualityButton.addEventListener('click', () => {
+          const settingsButton = document.querySelector('.ytp-settings-button');
+          if (settingsButton) {
+            settingsButton.click();
+            // Wait a bit then try to click quality option
+            setTimeout(() => {
+              const qualityMenuItem = Array.from(document.querySelectorAll('.ytp-menuitem')).find(
+                item => item.textContent.toLowerCase().includes('quality') || 
+                        item.textContent.toLowerCase().includes('qualität')
+              );
+              if (qualityMenuItem) {
+                qualityMenuItem.click();
+              }
+            }, 100);
+          }
+        });
 
-      // Update current quality display
-      this.updateQualityDisplay();
+        // Update current quality display
+        this.updateQualityDisplay();
+      } catch (error) {
+        console.log('YouTube Clean Player: Could not add quality shortcut:', error);
+      }
     }
   }
 
